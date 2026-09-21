@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>山口市地域交流センター位置図</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    html, body { height: 100%; margin: 0; }
+    body { display: flex; flex-direction: column; font-family: sans-serif; }
+    header { padding: 12px 16px; }
+    h1 { margin: 0; font-size: 20px; }
+    #status { margin: 6px 0 0; font-size: 14px; }
+    #map { flex: 1; min-height: 250px; }
+    .leaflet-popup-content { line-height: 1.8; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>山口市地域交流センター位置図</h1>
+    <p id="status" role="status">地点データを読み込み中です。</p>
+  </header>
+  <div id="map" aria-label="地域交流センターの地図"></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const status = document.getElementById("status");
+
+    async function showMap() {
+      try {
+        const map = L.map("map").setView([34.18, 131.47], 11);
+
+        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 19,
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        const response = await fetch("./mapdata.geojson");
+        if (!response.ok) throw new Error("データを取得できません");
+        const data = await response.json();
+
+        const points = L.geoJSON(data, {
+          onEachFeature: function (feature, layer) {
+            const properties = feature.properties || {};
+            const popup = document.createElement("div");
+            const name = document.createElement("strong");
+            const address = document.createElement("div");
+
+            name.textContent = properties.name || "名称なし";
+            address.textContent =
+              properties["所在地_連結表記"] || "住所の情報がありません";
+
+            popup.append(name, address);
+            layer.bindPopup(popup);
+          }
+        }).addTo(map);
+
+        if (points.getBounds().isValid()) {
+          map.fitBounds(points.getBounds(), { padding: [30, 30] });
+        }
+
+        status.textContent = "ピンを押すと、施設名と住所が表示されます。";
+      } catch (error) {
+        status.textContent =
+          "地図を読み込めませんでした。通信状態と地図データの保存を確認してください。";
+        console.error(error);
+      }
+    }
+
+    showMap();
+  </script>
+</body>
+</html>
