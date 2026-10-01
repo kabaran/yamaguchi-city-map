@@ -50,6 +50,19 @@
               properties["所在地_連結表記"] || "住所の情報がありません";
 
             popup.append(name, address);
+
+            const coords = feature.geometry && feature.geometry.coordinates;
+            if (coords) {
+              const [lng, lat] = coords;
+              const streetViewLink = document.createElement("a");
+              streetViewLink.href =
+                `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${lat},${lng}&heading=0&pitch=0&fov=80`;
+              streetViewLink.target = "_blank";
+              streetViewLink.rel = "noopener noreferrer";
+              streetViewLink.textContent = "ストリートビューで見る";
+              popup.append(document.createElement("br"), streetViewLink);
+            }
+
             layer.bindPopup(popup);
           }
         }).addTo(map);
