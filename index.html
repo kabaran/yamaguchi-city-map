@@ -51,6 +51,15 @@
 
             popup.append(name, address);
 
+            if (properties.URL) {
+              const homepageLink = document.createElement("a");
+              homepageLink.href = properties.URL;
+              homepageLink.target = "_blank";
+              homepageLink.rel = "noopener noreferrer";
+              homepageLink.textContent = "ホームページ";
+              popup.append(document.createElement("br"), homepageLink);
+            }
+
             const coords = feature.geometry && feature.geometry.coordinates;
             if (coords) {
               const [lng, lat] = coords;
