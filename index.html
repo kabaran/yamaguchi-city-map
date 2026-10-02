@@ -13,12 +13,57 @@
     #status { margin: 6px 0 0; font-size: 14px; }
     #map { flex: 1; min-height: 250px; }
     .leaflet-popup-content { line-height: 1.8; }
+    #search-wrap { position: relative; margin-top: 8px; max-width: 420px; }
+    #search-box {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 10px;
+      font-size: 16px;
+      border: 1px solid #999;
+      border-radius: 4px;
+    }
+    #search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border: 1px solid #999;
+      border-top: none;
+      max-height: 260px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+    }
+    #search-results div {
+      padding: 8px 10px;
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+    }
+    #search-results div:hover,
+    #search-results div:focus {
+      background: #eef4ff;
+    }
+    #search-results .hit-address {
+      font-size: 12px;
+      color: #555;
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>山口市地域コミュニティ施設位置図</h1>
     <p id="status" role="status">地点データを読み込み中です。</p>
+    <div id="search-wrap">
+      <input
+        type="search"
+        id="search-box"
+        placeholder="施設名・住所で検索（例：井関、秋穂、湯田）"
+        autocomplete="off"
+        disabled
+      >
+      <div id="search-results" role="listbox"></div>
+    </div>
   </header>
   <div id="map" aria-label="地域コミュニティ施設の地図"></div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -91,9 +136,12 @@
           features: data.features.filter((f) => !isKominkan(f))
         };
 
+        const searchIndex = [];
+
         const mainLayer = L.geoJSON(mainData, {
           onEachFeature: function (feature, layer) {
             layer.bindPopup(buildPopup(feature));
+            searchIndex.push({ feature, layer, parentLayer: mainLayer });
           }
         }).addTo(map);
 
@@ -109,6 +157,7 @@
           },
           onEachFeature: function (feature, layer) {
             layer.bindPopup(buildPopup(feature));
+            searchIndex.push({ feature, layer, parentLayer: kominkanLayer });
           }
         }).addTo(map);
 
@@ -116,6 +165,76 @@
           "地域交流センター等": mainLayer,
           "公民館・自治会施設": kominkanLayer
         }, { collapsed: false }).addTo(map);
+
+        const searchBox = document.getElementById("search-box");
+        const searchResults = document.getElementById("search-results");
+        searchBox.disabled = false;
+
+        function renderResults(query) {
+          const q = query.trim();
+          if (!q) {
+            searchResults.style.display = "none";
+            searchResults.innerHTML = "";
+            return;
+          }
+
+          const matches = searchIndex.filter(function (entry) {
+            const properties = entry.feature.properties || {};
+            const name = properties.name || "";
+            const address = properties["所在地_連結表記"] || "";
+            return name.includes(q) || address.includes(q);
+          }).slice(0, 15);
+
+          searchResults.innerHTML = "";
+          if (matches.length === 0) {
+            const empty = document.createElement("div");
+            empty.textContent = "該当する施設が見つかりません。";
+            searchResults.appendChild(empty);
+          } else {
+            matches.forEach(function (entry) {
+              const properties = entry.feature.properties || {};
+              const row = document.createElement("div");
+              row.setAttribute("role", "option");
+              row.tabIndex = 0;
+
+              const nameEl = document.createElement("div");
+              nameEl.textContent = properties.name || "名称なし";
+              const addrEl = document.createElement("div");
+              addrEl.className = "hit-address";
+              addrEl.textContent = properties["所在地_連結表記"] || "";
+
+              row.append(nameEl, addrEl);
+
+              const select = function () {
+                if (!map.hasLayer(entry.parentLayer)) {
+                  map.addLayer(entry.parentLayer);
+                }
+                map.setView(entry.layer.getLatLng(), 17);
+                entry.layer.openPopup();
+                searchResults.style.display = "none";
+              };
+              row.addEventListener("click", select);
+              row.addEventListener("keydown", function (e) {
+                if (e.key === "Enter") select();
+              });
+
+              searchResults.appendChild(row);
+            });
+          }
+          searchResults.style.display = "block";
+        }
+
+        searchBox.addEventListener("input", function () {
+          renderResults(searchBox.value);
+        });
+        searchBox.addEventListener("focus", function () {
+          if (searchBox.value.trim()) renderResults(searchBox.value);
+        });
+        document.addEventListener("click", function (e) {
+          if (!document.getElementById("search-wrap").contains(e.target)) {
+            searchResults.style.display = "none";
+          }
+        });
 
         const bounds = mainLayer.getBounds();
         if (kominkanLayer.getBounds().isValid()) {
