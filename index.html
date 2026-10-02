@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>山口市地域交流センター位置図</title>
+  <title>山口市地域コミュニティ施設位置図</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
     html, body { height: 100%; margin: 0; }
@@ -17,10 +17,10 @@
 </head>
 <body>
   <header>
-    <h1>山口市地域交流センター位置図</h1>
+    <h1>山口市地域コミュニティ施設位置図</h1>
     <p id="status" role="status">地点データを読み込み中です。</p>
   </header>
-  <div id="map" aria-label="地域交流センターの地図"></div>
+  <div id="map" aria-label="地域コミュニティ施設の地図"></div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     const status = document.getElementById("status");
@@ -38,49 +38,90 @@
         if (!response.ok) throw new Error("データを取得できません");
         const data = await response.json();
 
-        const points = L.geoJSON(data, {
+        function buildPopup(feature) {
+          const properties = feature.properties || {};
+          const popup = document.createElement("div");
+          const name = document.createElement("strong");
+          const address = document.createElement("div");
+
+          name.textContent = properties.name || "名称なし";
+          address.textContent =
+            properties["所在地_連結表記"] || "住所の情報がありません";
+
+          popup.append(name, address);
+
+          if (properties.URL) {
+            const homepageLink = document.createElement("a");
+            homepageLink.href = properties.URL;
+            homepageLink.target = "_blank";
+            homepageLink.rel = "noopener noreferrer";
+            homepageLink.textContent = "ホームページ";
+            popup.append(document.createElement("br"), homepageLink);
+          }
+
+          const coords = feature.geometry && feature.geometry.coordinates;
+          if (coords) {
+            const [lng, lat] = coords;
+            const streetViewLink = document.createElement("a");
+            streetViewLink.href =
+              `https://www.google.com/maps?q=${lat},${lng}&ll=${lat},${lng}&z=18`;
+            streetViewLink.target = "_blank";
+            streetViewLink.rel = "noopener noreferrer";
+            streetViewLink.textContent = "Googleマップで見る（ストリートビュー可）";
+            popup.append(document.createElement("br"), streetViewLink);
+          }
+
+          return popup;
+        }
+
+        function isKominkan(feature) {
+          return ((feature.properties || {}).name || "").includes("公民館");
+        }
+
+        const kominkanData = {
+          type: "FeatureCollection",
+          features: data.features.filter(isKominkan)
+        };
+        const mainData = {
+          type: "FeatureCollection",
+          features: data.features.filter((f) => !isKominkan(f))
+        };
+
+        const mainLayer = L.geoJSON(mainData, {
           onEachFeature: function (feature, layer) {
-            const properties = feature.properties || {};
-            const popup = document.createElement("div");
-            const name = document.createElement("strong");
-            const address = document.createElement("div");
-
-            name.textContent = properties.name || "名称なし";
-            address.textContent =
-              properties["所在地_連結表記"] || "住所の情報がありません";
-
-            popup.append(name, address);
-
-            if (properties.URL) {
-              const homepageLink = document.createElement("a");
-              homepageLink.href = properties.URL;
-              homepageLink.target = "_blank";
-              homepageLink.rel = "noopener noreferrer";
-              homepageLink.textContent = "ホームページ";
-              popup.append(document.createElement("br"), homepageLink);
-            }
-
-            const coords = feature.geometry && feature.geometry.coordinates;
-            if (coords) {
-              const [lng, lat] = coords;
-              const streetViewLink = document.createElement("a");
-              streetViewLink.href =
-                `https://www.google.com/maps?q=${lat},${lng}&ll=${lat},${lng}&z=18`;
-              streetViewLink.target = "_blank";
-              streetViewLink.rel = "noopener noreferrer";
-              streetViewLink.textContent = "Googleマップで見る（ストリートビュー可）";
-              popup.append(document.createElement("br"), streetViewLink);
-            }
-
-            layer.bindPopup(popup);
+            layer.bindPopup(buildPopup(feature));
           }
         }).addTo(map);
 
-        if (points.getBounds().isValid()) {
-          map.fitBounds(points.getBounds(), { padding: [30, 30] });
+        const kominkanLayer = L.geoJSON(kominkanData, {
+          pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, {
+              radius: 8,
+              color: "#b8860b",
+              fillColor: "#ffcc33",
+              fillOpacity: 0.9,
+              weight: 2
+            });
+          },
+          onEachFeature: function (feature, layer) {
+            layer.bindPopup(buildPopup(feature));
+          }
+        }).addTo(map);
+
+        L.control.layers(null, {
+          "地域交流センター等": mainLayer,
+          "公民館": kominkanLayer
+        }, { collapsed: false }).addTo(map);
+
+        const bounds = mainLayer.getBounds();
+        if (kominkanLayer.getBounds().isValid()) {
+          bounds.extend(kominkanLayer.getBounds());
+        }
+        if (bounds.isValid()) {
+          map.fitBounds(bounds, { padding: [30, 30] });
         }
 
-        status.textContent = "ピンを押すと、施設名と住所が表示されます。";
+        status.textContent = "ピンを押すと、施設名と住所が表示されます。右上でレイヤーの表示を切り替えられます。";
       } catch (error) {
         status.textContent =
           "地図を読み込めませんでした。通信状態と地図データの保存を確認してください。";
