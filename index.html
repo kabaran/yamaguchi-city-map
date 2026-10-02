@@ -75,7 +75,11 @@
         }
 
         function isKominkan(feature) {
-          return ((feature.properties || {}).name || "").includes("公民館");
+          const properties = feature.properties || {};
+          return (
+            (properties.name || "").includes("公民館") ||
+            Boolean(properties["データ区分"])
+          );
         }
 
         const kominkanData = {
@@ -110,7 +114,7 @@
 
         L.control.layers(null, {
           "地域交流センター等": mainLayer,
-          "公民館": kominkanLayer
+          "公民館・自治会施設": kominkanLayer
         }, { collapsed: false }).addTo(map);
 
         const bounds = mainLayer.getBounds();
