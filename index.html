@@ -60,7 +60,6 @@
         id="search-box"
         placeholder="施設名・住所で検索（例：井関、秋穂、湯田）"
         autocomplete="off"
-        disabled
       >
       <div id="search-results" role="listbox"></div>
     </div>
@@ -136,12 +135,9 @@
           features: data.features.filter((f) => !isKominkan(f))
         };
 
-        const searchIndex = [];
-
         const mainLayer = L.geoJSON(mainData, {
           onEachFeature: function (feature, layer) {
             layer.bindPopup(buildPopup(feature));
-            searchIndex.push({ feature, layer, parentLayer: mainLayer });
           }
         }).addTo(map);
 
@@ -157,7 +153,6 @@
           },
           onEachFeature: function (feature, layer) {
             layer.bindPopup(buildPopup(feature));
-            searchIndex.push({ feature, layer, parentLayer: kominkanLayer });
           }
         }).addTo(map);
 
@@ -166,9 +161,16 @@
           "公民館・自治会施設": kominkanLayer
         }, { collapsed: false }).addTo(map);
 
+        const searchIndex = [];
+        mainLayer.eachLayer(function (layer) {
+          searchIndex.push({ feature: layer.feature, layer, parentLayer: mainLayer });
+        });
+        kominkanLayer.eachLayer(function (layer) {
+          searchIndex.push({ feature: layer.feature, layer, parentLayer: kominkanLayer });
+        });
+
         const searchBox = document.getElementById("search-box");
         const searchResults = document.getElementById("search-results");
-        searchBox.disabled = false;
 
         function renderResults(query) {
           const q = query.trim();
