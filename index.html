@@ -134,21 +134,33 @@
           return popup;
         }
 
+        function isJichikaiKoukaidou(feature) {
+          const properties = feature.properties || {};
+          return properties["データ区分"] === "自治会公会堂(発見分・網羅性なし)";
+        }
+
         function isKominkan(feature) {
           const properties = feature.properties || {};
+          if (isJichikaiKoukaidou(feature)) return false;
           return (
             (properties.name || "").includes("公民館") ||
             Boolean(properties["データ区分"])
           );
         }
 
+        const koukaidouData = {
+          type: "FeatureCollection",
+          features: data.features.filter(isJichikaiKoukaidou)
+        };
         const kominkanData = {
           type: "FeatureCollection",
           features: data.features.filter(isKominkan)
         };
         const mainData = {
           type: "FeatureCollection",
-          features: data.features.filter((f) => !isKominkan(f))
+          features: data.features.filter(
+            (f) => !isKominkan(f) && !isJichikaiKoukaidou(f)
+          )
         };
 
         const mainLayer = L.geoJSON(mainData, {
@@ -172,9 +184,25 @@
           }
         }).addTo(map);
 
+        const koukaidouLayer = L.geoJSON(koukaidouData, {
+          pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, {
+              radius: 8,
+              color: "#6b3fa0",
+              fillColor: "#b98cf2",
+              fillOpacity: 0.9,
+              weight: 2
+            });
+          },
+          onEachFeature: function (feature, layer) {
+            layer.bindPopup(buildPopup(feature));
+          }
+        }).addTo(map);
+
         L.control.layers(null, {
           "地域交流センター等": mainLayer,
-          "公民館": kominkanLayer
+          "公民館": kominkanLayer,
+          "見つかった公会堂（網羅性なし）": koukaidouLayer
         }, { collapsed: false }).addTo(map);
 
         const searchIndex = [];
@@ -183,6 +211,9 @@
         });
         kominkanLayer.eachLayer(function (layer) {
           searchIndex.push({ feature: layer.feature, layer, parentLayer: kominkanLayer });
+        });
+        koukaidouLayer.eachLayer(function (layer) {
+          searchIndex.push({ feature: layer.feature, layer, parentLayer: koukaidouLayer });
         });
 
         const searchBox = document.getElementById("search-box");
