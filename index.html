@@ -286,7 +286,7 @@
                 if (!map.hasLayer(entry.parentLayer)) {
                   map.addLayer(entry.parentLayer);
                 }
-                map.setView(entry.layer.getLatLng(), 17);
+                map.setView(entry.layer.getLatLng(), 17, { animate: false });
                 entry.layer.openPopup();
                 searchResults.style.display = "none";
               };
