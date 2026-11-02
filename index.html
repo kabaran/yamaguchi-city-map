@@ -32,7 +32,7 @@
       border-top: none;
       max-height: 260px;
       overflow-y: auto;
-      z-index: 1000;
+      z-index: 2000;
       display: none;
     }
     #search-results div {
@@ -80,7 +80,7 @@
 
     async function showMap() {
       try {
-        const map = L.map("map").setView([34.18, 131.47], 11);
+        const map = L.map("map", { zoomControl: false }).setView([34.18, 131.47], 11);
 
         L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
           maxZoom: 19,
