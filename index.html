@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>山口市地域コミュニティ施設位置図</title>
+  <title>山口県地域コミュニティ施設位置図</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
     html, body { height: 100%; margin: 0; }
@@ -57,11 +57,17 @@
       line-height: 1.5;
       max-width: 240px;
     }
+    .popup-h { margin-top: 6px; font-size: 12px; color: #555; border-bottom: 1px solid #ddd; }
+    .popup-warn { margin-top: 6px; padding: 6px 8px; background: #fff3a8; border: 2px solid #e0b800; font-size: 13px; line-height: 1.5; max-width: 260px; }
+    #pref-status { margin-top: 8px; font-size: 14px; max-width: 720px; }
+    #pref-status summary { cursor: pointer; font-weight: bold; }
+    #pref-status li { margin: 2px 0; }
+    #pref-status .st-skip, #pref-status .st-unchecked { color: #8a5a00; }
   </style>
 </head>
 <body>
   <header>
-    <h1>山口市地域コミュニティ施設位置図</h1>
+    <h1>山口県地域コミュニティ施設位置図</h1>
     <p id="status" role="status">地点データを読み込み中です。</p>
     <div id="search-wrap">
       <input
@@ -72,6 +78,11 @@
       >
       <div id="search-results" role="listbox"></div>
     </div>
+    <details id="pref-status">
+      <summary>地域交流センター：山口県の市町ごとの対応状況</summary>
+      <p id="pref-status-note"></p>
+      <ul id="pref-status-list"></ul>
+    </details>
   </header>
   <div id="map" aria-label="地域コミュニティ施設の地図"></div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -90,6 +101,22 @@
         const response = await fetch("./mapdata.geojson");
         if (!response.ok) throw new Error("データを取得できません");
         const data = await response.json();
+        const prefResponse = await fetch("./centers_pref.geojson");
+        if (!prefResponse.ok) throw new Error("データを取得できません");
+        const prefData = await prefResponse.json();
+
+        fetch("./status_centers.json").then((r) => r.json()).then(function (st) {
+          const label = { ok: "表示", skip: "未対応", none: "該当なし", unchecked: "未対応" };
+          document.getElementById("pref-status-note").textContent =
+            st.note + "（調査日 " + st.checked + "）";
+          const ul = document.getElementById("pref-status-list");
+          st.municipalities.forEach(function (m) {
+            const li = document.createElement("li");
+            li.className = "st-" + m.status;
+            li.textContent = m.name + "【" + label[m.status] + "】" + m.text;
+            ul.appendChild(li);
+          });
+        }).catch(function () {});
 
         function buildPopup(feature) {
           const properties = feature.properties || {};
@@ -108,6 +135,25 @@
             topic.className = "popup-topic";
             topic.textContent = "📰 " + properties["お知らせ・話題"];
             popup.append(topic);
+          }
+
+          if (properties["データ区分"] === "地域交流センター（山口市以外）") {
+            const add = function (head, text) {
+              if (!text) return;
+              const h = document.createElement("div");
+              h.className = "popup-h";
+              h.textContent = head;
+              const t = document.createElement("div");
+              t.textContent = text;
+              popup.append(h, t);
+            };
+            add("電話", properties["電話番号"]);
+            add("出典", properties["出典"] + "（" + properties["情報更新日"] + "時点）");
+            add("備考", properties["備考"]);
+            const warn = document.createElement("div");
+            warn.className = "popup-warn";
+            warn.textContent = "⚠ 位置は住所からの推定で、現地は未確認です。（" + properties["位置の精度"] + "）";
+            popup.append(warn);
           }
 
           if (properties.URL) {
@@ -172,6 +218,17 @@
           )
         };
 
+        const prefCenterLayer = L.geoJSON(prefData, {
+          pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, {
+              radius: 8, color: "#1d5fa8", fillColor: "#6fb1f5", fillOpacity: 0.9, weight: 2
+            });
+          },
+          onEachFeature: function (feature, layer) {
+            layer.bindPopup(buildPopup(feature));
+          }
+        }).addTo(map);
+
         const mainLayer = L.geoJSON(mainData, {
           onEachFeature: function (feature, layer) {
             layer.bindPopup(buildPopup(feature));
@@ -224,13 +281,17 @@
         }).addTo(map);
 
         L.control.layers(null, {
-          "地域交流センター等": mainLayer,
+          "地域交流センター等（山口市）": mainLayer,
+          "地域交流センター（山口市以外・位置は推定）": prefCenterLayer,
           "公民館": kominkanLayer,
           "見つかった公会堂（網羅性なし）": koukaidouLayer,
           "認知症カフェ": ninchishouCafeLayer
         }, { collapsed: false }).addTo(map);
 
         const searchIndex = [];
+        prefCenterLayer.eachLayer(function (layer) {
+          searchIndex.push({ feature: layer.feature, layer, parentLayer: prefCenterLayer });
+        });
         mainLayer.eachLayer(function (layer) {
           searchIndex.push({ feature: layer.feature, layer, parentLayer: mainLayer });
         });
@@ -314,6 +375,7 @@
         });
 
         const bounds = mainLayer.getBounds();
+        bounds.extend(prefCenterLayer.getBounds());
         if (kominkanLayer.getBounds().isValid()) {
           bounds.extend(kominkanLayer.getBounds());
         }
