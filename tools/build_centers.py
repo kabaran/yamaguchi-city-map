@@ -20,16 +20,19 @@ feats, bad = [], []
 for f in sorted(glob.glob(os.path.join(here, LAYER, '*.json'))):
     d = json.load(open(f, encoding='utf-8'))
     for r in d['items']:
-        g = geocode(r.get('geocode_query', r['address']))
-        if not g: bad.append((r['name'], '見つからない')); continue
-        title, (lon, lat) = g[0]
+        if 'lonlat' in r:   # 人が確認した座標があるときは、それを使う
+            lon, lat = r['lonlat']; title = r['lonlat_source']
+        else:
+            g = geocode(r.get('geocode_query', r['address']))
+            if not g: bad.append((r['name'], '見つからない')); continue
+            title, (lon, lat) = g[0]
         if not (130.7 <= lon <= 132.5 and 33.6 <= lat <= 34.8):
             bad.append((r['name'], f'範囲外 {lon},{lat}')); continue   # 山口県の範囲（経度緯度の取り違えも検出）
         p = {'name': r['name'], '地方公共団体名': '山口県' + d['municipality'], '所在地_連結表記': r['address'],
              '電話番号': r.get('phone') or None, 'データ区分': KUBUN,
              '出典': d['source'], 'URL': d['source_url'], '情報更新日': d['updated'],
-             '位置の根拠': '国土地理院 住所検索（住所からの推定・現地未確認）', '位置の一致': title,
-             '位置の精度': '番地まで一致' if any(c in title for c in '0123456789０１２３４５６７８９') else '町字までしか一致せず（実際の位置とずれが大きい可能性）'}
+             '位置の根拠': ('ユーザー提供の座標（Googleマップ）' if 'lonlat' in r else '国土地理院 住所検索（住所からの推定・現地未確認）'), '位置の一致': title,
+             '位置の精度': ('ユーザー提供の座標で確定' if 'lonlat' in r else '番地まで一致') if ('lonlat' in r or any(c in title for c in '0123456789０１２３４５６７８９')) else '町字までしか一致せず（実際の位置とずれが大きい可能性）'}
         if r.get('note'): p['備考'] = r['note']
         feats.append({'type': 'Feature', 'geometry': {'type': 'Point', 'coordinates': [lon, lat]}, 'properties': p})
         print(d['municipality'], '|', r['name'], '|', r['address'], '->', title)
