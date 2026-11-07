@@ -33,8 +33,8 @@ for f in sorted(glob.glob(os.path.join(here, LAYER, '*.json'))):
         p = {'name': r['name'], '地方公共団体名': '山口県' + d['municipality'], '所在地_連結表記': r['address'],
              '電話番号': r.get('phone') or None, 'データ区分': KUBUN,
              '出典': d['source'], 'URL': r.get('props', {}).get('出典ページ') or d['source_url'], '情報更新日': r.get('updated', d['updated']),
-             '位置の根拠': ('ユーザー提供の座標（Googleマップ）' if 'lonlat' in r else '国土地理院 住所検索（住所からの推定・現地未確認）'), '位置の一致': title,
-             '位置の精度': ('ユーザー提供の座標で確定' if 'lonlat' in r else '番地まで一致') if ('lonlat' in r or any(c in title for c in '0123456789０１２３４５６７８９')) else '町字までしか一致せず（実際の位置とずれが大きい可能性）'}
+             '位置の根拠': ((('ユーザー提供の座標（Googleマップ）' if 'ユーザー' in r.get('lonlat_source','') else r.get('lonlat_source', '指定された座標'))) if 'lonlat' in r else '国土地理院 住所検索（住所からの推定・現地未確認）'), '位置の一致': title,
+             '位置の精度': (('ユーザー提供の座標で確定' if 'ユーザー' in r.get('lonlat_source','') else '市の公式ページの座標') if 'lonlat' in r else '番地まで一致') if ('lonlat' in r or any(c in title for c in '0123456789０１２３４５６７８９')) else '町字までしか一致せず（実際の位置とずれが大きい可能性）'}
         for k, v in r.get('props', {}).items():
             if k != '出典ページ': p[k] = v
         if r.get('note'): p['備考'] = r['note']
