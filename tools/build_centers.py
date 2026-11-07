@@ -11,10 +11,11 @@ def geocode(addr):
     r = json.load(urllib.request.urlopen(u, timeout=30))
     cache[addr] = [(x['properties']['title'], x['geometry']['coordinates']) for x in r][:3]
     time.sleep(0.3); return cache[addr]
-# 使い方: build_centers.py [centers|kominkan]（既定は centers）
+# 使い方: build_centers.py [centers|kominkan|jichikai]（既定は centers）
 LAYER = sys.argv[1] if len(sys.argv) > 1 else 'centers'
 CONF = {'centers': ('centers_pref.geojson', '地域交流センター（山口市以外）'),
-        'kominkan': ('kominkan_pref.geojson', '公民館（山口市以外）')}
+        'kominkan': ('kominkan_pref.geojson', '公民館（山口市以外）'),
+        'jichikai': ('jichikai_pref.geojson', '自治会館・集会所（山口市以外）')}
 OUT, KUBUN = CONF[LAYER]
 feats, bad = [], []
 for f in sorted(glob.glob(os.path.join(here, LAYER, '*.json'))):
