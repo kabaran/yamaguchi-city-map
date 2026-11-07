@@ -69,6 +69,7 @@
   <header>
     <h1>山口県地域コミュニティ施設位置図</h1>
     <p id="status" role="status">地点データを読み込み中です。</p>
+    <p style="margin:8px 0 0"><label>市町を選ぶ：<select id="muni" style="font-size:16px;padding:4px 6px"><option value="">山口県全体</option></select></label></p>
     <div id="search-wrap">
       <input
         type="search"
@@ -218,7 +219,16 @@
           )
         };
 
+        let curMuni = "";
+        function muniOf(f) {
+          const pr = f.properties || {};
+          const m = (pr["地方公共団体名"] || pr["所在地_連結表記"] || "").match(/^山口県\s*(?:[^\s市町]+郡)?(.+?[市町])/);
+          return m ? m[1] : "山口市";
+        }
+        function muniFilter(f) { return !curMuni || muniOf(f) === curMuni; }
+
         const prefCenterLayer = L.geoJSON(prefData, {
+          filter: muniFilter,
           pointToLayer: function (feature, latlng) {
             return L.circleMarker(latlng, {
               radius: 8, color: "#1d5fa8", fillColor: "#6fb1f5", fillOpacity: 0.9, weight: 2
@@ -230,12 +240,14 @@
         }).addTo(map);
 
         const mainLayer = L.geoJSON(mainData, {
+          filter: muniFilter,
           onEachFeature: function (feature, layer) {
             layer.bindPopup(buildPopup(feature));
           }
         }).addTo(map);
 
         const kominkanLayer = L.geoJSON(kominkanData, {
+          filter: muniFilter,
           pointToLayer: function (feature, latlng) {
             return L.circleMarker(latlng, {
               radius: 8,
@@ -251,6 +263,7 @@
         }).addTo(map);
 
         const koukaidouLayer = L.geoJSON(koukaidouData, {
+          filter: muniFilter,
           pointToLayer: function (feature, latlng) {
             return L.circleMarker(latlng, {
               radius: 8,
@@ -266,6 +279,7 @@
         }).addTo(map);
 
         const ninchishouCafeLayer = L.geoJSON(ninchishouCafeData, {
+          filter: muniFilter,
           pointToLayer: function (feature, latlng) {
             return L.circleMarker(latlng, {
               radius: 8,
@@ -288,22 +302,20 @@
           "認知症カフェ": ninchishouCafeLayer
         }, { collapsed: false }).addTo(map);
 
+        const layerDefs = [
+          [prefCenterLayer, prefData], [mainLayer, mainData], [kominkanLayer, kominkanData],
+          [koukaidouLayer, koukaidouData], [ninchishouCafeLayer, ninchishouCafeData]
+        ];
         const searchIndex = [];
-        prefCenterLayer.eachLayer(function (layer) {
-          searchIndex.push({ feature: layer.feature, layer, parentLayer: prefCenterLayer });
-        });
-        mainLayer.eachLayer(function (layer) {
-          searchIndex.push({ feature: layer.feature, layer, parentLayer: mainLayer });
-        });
-        kominkanLayer.eachLayer(function (layer) {
-          searchIndex.push({ feature: layer.feature, layer, parentLayer: kominkanLayer });
-        });
-        koukaidouLayer.eachLayer(function (layer) {
-          searchIndex.push({ feature: layer.feature, layer, parentLayer: koukaidouLayer });
-        });
-        ninchishouCafeLayer.eachLayer(function (layer) {
-          searchIndex.push({ feature: layer.feature, layer, parentLayer: ninchishouCafeLayer });
-        });
+        function rebuildIndex() {
+          searchIndex.length = 0;
+          layerDefs.forEach(function (d) {
+            d[0].eachLayer(function (layer) {
+              searchIndex.push({ feature: layer.feature, layer, parentLayer: d[0] });
+            });
+          });
+        }
+        rebuildIndex();
 
         const searchBox = document.getElementById("search-box");
         const searchResults = document.getElementById("search-results");
@@ -374,17 +386,41 @@
           }
         });
 
-        const bounds = mainLayer.getBounds();
-        bounds.extend(prefCenterLayer.getBounds());
-        if (kominkanLayer.getBounds().isValid()) {
-          bounds.extend(kominkanLayer.getBounds());
+        function fitAll() {
+          const bounds = L.latLngBounds([]);
+          layerDefs.forEach(function (d) {
+            if (d[0].getBounds().isValid()) bounds.extend(d[0].getBounds());
+          });
+          if (bounds.isValid()) map.fitBounds(bounds, { padding: [30, 30], maxZoom: 15 });
         }
-        if (ninchishouCafeLayer.getBounds().isValid()) {
-          bounds.extend(ninchishouCafeLayer.getBounds());
-        }
-        if (bounds.isValid()) {
-          map.fitBounds(bounds, { padding: [30, 30] });
-        }
+        fitAll();
+
+        // 市町を選ぶ
+        const muniSel = document.getElementById("muni");
+        const munis = ["下関市","宇部市","山口市","萩市","防府市","下松市","岩国市","光市","長門市","柳井市","美祢市","周南市","山陽小野田市","周防大島町","和木町","上関町","田布施町","平生町","阿武町"];
+        munis.forEach(function (m) {
+          const o = document.createElement("option");
+          o.value = m;
+          o.textContent = m;
+          muniSel.appendChild(o);
+        });
+        muniSel.addEventListener("change", function () {
+          curMuni = muniSel.value;
+          layerDefs.forEach(function (d) {
+            d[0].clearLayers();
+            d[0].addData(d[1]);
+          });
+          rebuildIndex();
+          searchBox.value = "";
+          searchResults.style.display = "none";
+          const n = searchIndex.length;
+          if (n === 0) {
+            status.textContent = curMuni + "：地図に出せる施設がまだありません（未対応の層があります。下の「対応状況」を見てください）。";
+          } else {
+            status.textContent = (curMuni || "山口県全体") + "：" + n + "件を表示中です。";
+            fitAll();
+          }
+        });
 
         status.textContent = "ピンを押すと、施設名と住所が表示されます。右上でレイヤーの表示を切り替えられます。";
       } catch (error) {
