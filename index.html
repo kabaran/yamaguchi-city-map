@@ -180,7 +180,10 @@
 
           if (properties.URL) {
             const homepageLink = document.createElement("a");
-            homepageLink.href = properties.URL;
+            try {
+              const u = new URL(properties.URL, location.href);
+              if (u.protocol === "https:" || u.protocol === "http:") homepageLink.href = u.href;
+            } catch (e) {}
             homepageLink.target = "_blank";
             homepageLink.rel = "noopener noreferrer";
             homepageLink.textContent = "ホームページ";
