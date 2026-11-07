@@ -103,6 +103,9 @@
         if (!prefResponse.ok) throw new Error("データを取得できません");
         const prefData = await prefResponse.json();
 
+        const cafePrefResponse = await fetch("./ninchisho_cafe_pref.geojson");
+        if (!cafePrefResponse.ok) throw new Error("データを取得できません");
+        const cafePrefData = await cafePrefResponse.json();
         const jichikaiResponse = await fetch("./jichikai_pref.geojson");
         if (!jichikaiResponse.ok) throw new Error("データを取得できません");
         const jichikaiPrefData = await jichikaiResponse.json();
@@ -110,7 +113,7 @@
         if (!kominkanResponse.ok) throw new Error("データを取得できません");
         const kominkanPrefData = await kominkanResponse.json();
 
-        ["./status_centers.json", "./status_kominkan.json", "./status_jichikai.json"].forEach(function (u) {
+        ["./status_centers.json", "./status_kominkan.json", "./status_jichikai.json", "./status_cafes.json"].forEach(function (u) {
           fetch(u).then((r) => r.json()).then(function (st) {
             const label = { ok: "表示", skip: "未対応", none: "該当なし", unchecked: "未対応" };
             const det = document.createElement("details");
@@ -159,6 +162,11 @@
               t.textContent = text;
               popup.append(h, t);
             };
+            add("会場", properties["会場"]);
+            add("開催", properties["開催日時"]);
+            add("参加費", properties["参加費"]);
+            add("申込", properties["申込"]);
+            add("問い合わせ先", properties["問い合わせ先"]);
             add("電話", properties["電話番号"]);
             add("出典", properties["出典"] + "（" + properties["情報更新日"] + "時点）");
             add("備考", properties["備考"]);
@@ -239,6 +247,18 @@
           return m ? m[1] : "山口市";
         }
         function muniFilter(f) { return !curMuni || muniOf(f) === curMuni; }
+
+        const prefCafeLayer = L.geoJSON(cafePrefData, {
+          filter: muniFilter,
+          pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, {
+              radius: 8, color: "#a0152e", fillColor: "#ff9fb6", fillOpacity: 0.9, weight: 2
+            });
+          },
+          onEachFeature: function (feature, layer) {
+            layer.bindPopup(buildPopup(feature));
+          }
+        }).addTo(map);
 
         const prefJichikaiLayer = L.geoJSON(jichikaiPrefData, {
           filter: muniFilter,
@@ -338,11 +358,12 @@
           "公民館（山口市以外・位置は推定）": prefKominkanLayer,
           "自治会館・集会所（山口市以外・投票所一覧より・網羅性なし）": prefJichikaiLayer,
           "見つかった公会堂（網羅性なし）": koukaidouLayer,
-          "認知症カフェ": ninchishouCafeLayer
+          "認知症カフェ（山口市）": ninchishouCafeLayer,
+          "認知症カフェ（山口市以外・位置は推定）": prefCafeLayer
         }, { collapsed: false }).addTo(map);
 
         const layerDefs = [
-          [prefCenterLayer, prefData], [prefKominkanLayer, kominkanPrefData], [prefJichikaiLayer, jichikaiPrefData], [mainLayer, mainData], [kominkanLayer, kominkanData],
+          [prefCenterLayer, prefData], [prefKominkanLayer, kominkanPrefData], [prefJichikaiLayer, jichikaiPrefData], [prefCafeLayer, cafePrefData], [mainLayer, mainData], [kominkanLayer, kominkanData],
           [koukaidouLayer, koukaidouData], [ninchishouCafeLayer, ninchishouCafeData]
         ];
         const searchIndex = [];

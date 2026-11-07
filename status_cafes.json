@@ -1,0 +1,26 @@
+{
+"layer": "認知症カフェ",
+"checked": "2026-11-07",
+"note": "各市町の公式サイトの情報のみ。個人宅で開く会、個人・携帯の電話番号は載せていません。市町ごとに順に追加中で、未対応の市町は下に理由を書いています。",
+"municipalities": [
+{"name":"山口市","status":"ok","text":"既存データ21件（出典の確認は今後）"},
+{"name":"宇部市","status":"ok","text":"16件。「カフェ夏みかん」は会場名がなく連絡先が個人の携帯で、個人宅の可能性があるため載せていません"},
+{"name":"防府市","status":"unchecked","text":"公式の一覧表あり。未着手"},
+{"name":"下松市","status":"unchecked","text":"公式の一覧PDFあり。未着手"},
+{"name":"岩国市","status":"unchecked","text":"公式の一覧PDFあり。未着手"},
+{"name":"周南市","status":"unchecked","text":"公式の地区別表あり。未着手"},
+{"name":"山陽小野田市","status":"unchecked","text":"公式ページあり。未着手"},
+{"name":"美祢市","status":"unchecked","text":"公式一覧あり（番地なし）。未着手"},
+{"name":"柳井市","status":"unchecked","text":"公式の表あり。未着手"},
+{"name":"萩市","status":"unchecked","text":"公式ページあり。未着手"},
+{"name":"長門市","status":"unchecked","text":"記者発表資料に3件。未着手"},
+{"name":"光市","status":"unchecked","text":"情報誌PDFに一覧。未着手"},
+{"name":"下関市","status":"unchecked","text":"公式ページに住所なし。未着手"},
+{"name":"上関町","status":"unchecked","text":"1件あり。未着手"},
+{"name":"和木町","status":"unchecked","text":"1件あり。未着手"},
+{"name":"周防大島町","status":"unchecked","text":"開催場所の公式情報が未確認。未着手"},
+{"name":"田布施町","status":"unchecked","text":"見つからず。未着手"},
+{"name":"平生町","status":"unchecked","text":"見つからず。未着手"},
+{"name":"阿武町","status":"unchecked","text":"見つからず。未着手"}
+]
+}
