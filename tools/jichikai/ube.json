@@ -1,0 +1,298 @@
+{
+ "municipality": "宇部市",
+ "source": "宇部市公式サイト「避難施設（地区別）」",
+ "source_url": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/index.html",
+ "updated": "2023〜2026（地区ごと）",
+ "items": [
+  {
+   "name": "岐波自治会館",
+   "address": "山口県宇部市大字東岐波1450番地2",
+   "phone": "",
+   "updated": "2023-04-01",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001230.html"
+   },
+   "note": "避難施設として載っている施設（東岐波地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2023-04-01）"
+  },
+  {
+   "name": "前田集会所",
+   "address": "山口県宇部市大字東岐波1777番地",
+   "phone": "",
+   "updated": "2023-04-01",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001230.html"
+   },
+   "note": "避難施設として載っている施設（東岐波地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2023-04-01）"
+  },
+  {
+   "name": "丸尾自治会館",
+   "address": "山口県宇部市大字東岐波4327番地30",
+   "phone": "",
+   "updated": "2023-04-01",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001230.html"
+   },
+   "note": "避難施設として載っている施設（東岐波地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2023-04-01）"
+  },
+  {
+   "name": "丸尾原自治会館",
+   "address": "山口県宇部市大字東岐波5063番地11",
+   "phone": "",
+   "updated": "2023-04-01",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001230.html"
+   },
+   "note": "避難施設として載っている施設（東岐波地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2023-04-01）"
+  },
+  {
+   "name": "吉田公会堂",
+   "address": "山口県宇部市大字西岐波吉田1021-2",
+   "phone": "",
+   "updated": "2026-03-23",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001231.html"
+   },
+   "note": "避難施設として載っている施設（西岐波地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2026-03-23）"
+  },
+  {
+   "name": "柳ヶ瀬自治会館",
+   "address": "山口県宇部市大字西岐波1382-1",
+   "phone": "",
+   "updated": "2026-03-23",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001231.html"
+   },
+   "note": "避難施設として載っている施設（西岐波地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2026-03-23）"
+  },
+  {
+   "name": "白土自治会館",
+   "address": "山口県宇部市床波四丁目8-40-6",
+   "phone": "",
+   "updated": "2026-03-23",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001231.html"
+   },
+   "note": "避難施設として載っている施設（西岐波地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2026-03-23）"
+  },
+  {
+   "name": "西岐波団地集会所",
+   "address": "山口県宇部市大字西岐波3916番地",
+   "phone": "",
+   "updated": "2026-03-23",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001231.html"
+   },
+   "note": "避難施設として載っている施設（西岐波地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2026-03-23）"
+  },
+  {
+   "name": "ひらき台集会所",
+   "address": "山口県宇部市大字上宇部150番地117",
+   "phone": "",
+   "updated": "2023-04-01",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001239.html"
+   },
+   "note": "避難施設として載っている施設（川上地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2023-04-01）"
+  },
+  {
+   "name": "新川4区自治会集会所",
+   "address": "山口県宇部市大字小串154番地11",
+   "phone": "",
+   "updated": "2026-09-11",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001241.html"
+   },
+   "note": "避難施設として載っている施設（新川地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2026-09-11）"
+  },
+  {
+   "name": "東桃山集会所",
+   "address": "山口県宇部市大字中宇部字西貝立2000番5",
+   "phone": "",
+   "updated": "2026-09-11",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001241.html"
+   },
+   "note": "避難施設として載っている施設（新川地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2026-09-11）"
+  },
+  {
+   "name": "三嶋会館",
+   "address": "山口県宇部市居能町二丁目8番22号",
+   "phone": "",
+   "updated": "2023-04-01",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001243.html"
+   },
+   "note": "避難施設として載っている施設（藤山地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2023-04-01）。名称は「会館」で、自治会の施設かは資料に記載なし"
+  },
+  {
+   "name": "平原会館",
+   "address": "山口県宇部市東平原二丁目14番8号",
+   "phone": "",
+   "updated": "2023-04-01",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001243.html"
+   },
+   "note": "避難施設として載っている施設（藤山地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2023-04-01）。名称は「会館」で、自治会の施設かは資料に記載なし"
+  },
+  {
+   "name": "松崎会館",
+   "address": "山口県宇部市松崎町3番5号",
+   "phone": "",
+   "updated": "2023-04-01",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001243.html"
+   },
+   "note": "避難施設として載っている施設（藤山地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2023-04-01）。名称は「会館」で、自治会の施設かは資料に記載なし"
+  },
+  {
+   "name": "迫条自治会館",
+   "address": "山口県宇部市厚南北四丁目19番17号",
+   "phone": "",
+   "updated": "2023-04-01",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001244.html"
+   },
+   "note": "避難施設として載っている施設（西宇部地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2023-04-01）"
+  },
+  {
+   "name": "西宇部町自治会館",
+   "address": "山口県宇部市西宇部南四丁目4番6号",
+   "phone": "",
+   "updated": "2023-04-01",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001244.html"
+   },
+   "note": "避難施設として載っている施設（西宇部地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2023-04-01）"
+  },
+  {
+   "name": "春日町自治会館",
+   "address": "山口県宇部市大字際波247-3",
+   "phone": "",
+   "updated": "2023-04-01",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001244.html"
+   },
+   "note": "避難施設として載っている施設（西宇部地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2023-04-01）"
+  },
+  {
+   "name": "西ヶ丘自治会館",
+   "address": "山口県宇部市西宇部北七丁目12番17号",
+   "phone": "",
+   "updated": "2023-04-01",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001244.html"
+   },
+   "note": "避難施設として載っている施設（西宇部地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2023-04-01）"
+  },
+  {
+   "name": "若山自治会集会所",
+   "address": "山口県宇部市大字東須恵1129番地14",
+   "phone": "",
+   "updated": "2023-04-01",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001247.html"
+   },
+   "note": "避難施設として載っている施設（原地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2023-04-01）"
+  },
+  {
+   "name": "光陽台自治会館",
+   "address": "山口県宇部市大字東須恵726番地",
+   "phone": "",
+   "updated": "2023-04-01",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001247.html"
+   },
+   "note": "避難施設として載っている施設（原地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2023-04-01）"
+  },
+  {
+   "name": "岡田屋公会堂",
+   "address": "山口県宇部市大字東須恵字木迫2388番地2",
+   "phone": "",
+   "updated": "2023-04-01",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001247.html"
+   },
+   "note": "避難施設として載っている施設（原地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2023-04-01）"
+  },
+  {
+   "name": "温見自治会集会所",
+   "address": "山口県宇部市大字吉見2608番地1",
+   "phone": "",
+   "updated": "2024-03-31",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001248.html"
+   },
+   "note": "避難施設として載っている施設（厚東地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2024-03-31）"
+  },
+  {
+   "name": "末信自治会集会所",
+   "address": "山口県宇部市大字末信57番地1",
+   "phone": "",
+   "updated": "2024-03-31",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001248.html"
+   },
+   "note": "避難施設として載っている施設（厚東地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2024-03-31）"
+  },
+  {
+   "name": "広瀬公会堂",
+   "address": "山口県宇部市大字広瀬563番地1",
+   "phone": "",
+   "updated": "2024-03-31",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001248.html"
+   },
+   "note": "避難施設として載っている施設（厚東地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2024-03-31）"
+  },
+  {
+   "name": "立熊ふれあい会館",
+   "address": "山口県宇部市大字吉見152番地2",
+   "phone": "",
+   "updated": "2024-03-31",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001248.html"
+   },
+   "note": "避難施設として載っている施設（厚東地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2024-03-31）。資料の所在地は「吉見152番地2,3」"
+  },
+  {
+   "name": "上山中集会所",
+   "address": "山口県宇部市大字山中341番地1",
+   "phone": "",
+   "updated": "2023-04-01",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001249.html"
+   },
+   "note": "避難施設として載っている施設（二俣瀬地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2023-04-01）"
+  },
+  {
+   "name": "北在集会所",
+   "address": "山口県宇部市大字船木4577番地3",
+   "phone": "",
+   "updated": "2024-01-01",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001251.html"
+   },
+   "note": "避難施設として載っている施設（船木地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2024-01-01）"
+  },
+  {
+   "name": "西山集会所",
+   "address": "山口県宇部市大字船木4625番地4",
+   "phone": "",
+   "updated": "2024-01-01",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001251.html"
+   },
+   "note": "避難施設として載っている施設（船木地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2024-01-01）"
+  },
+  {
+   "name": "神元集会所",
+   "address": "山口県宇部市大字東万倉433番地3",
+   "phone": "",
+   "updated": "2023-04-01",
+   "props": {
+    "出典ページ": "https://www.city.ube.yamaguchi.jp/kurashi/bousai/bousai/1001229/1001252.html"
+   },
+   "note": "避難施設として載っている施設（万倉地区）。自治会館・集会所の全部ではありません。ページの更新日が古いものがある（2023-04-01）"
+  }
+ ]
+}

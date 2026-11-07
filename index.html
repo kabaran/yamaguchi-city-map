@@ -172,9 +172,12 @@
             add("備考", properties["備考"]);
             const warn = document.createElement("div");
             warn.className = "popup-warn";
-            warn.textContent = (properties["位置の根拠"] || "").startsWith("ユーザー提供")
+            const basis = properties["位置の根拠"] || "";
+            warn.textContent = basis.startsWith("ユーザー提供")
               ? "位置はユーザー提供の座標です（Googleマップ）。現地は未確認です。"
-              : "⚠ 位置は住所からの推定で、現地は未確認です。（" + properties["位置の精度"] + "）";
+              : basis.startsWith("国土地理院")
+                ? "⚠ 位置は住所からの推定で、現地は未確認です。（" + properties["位置の精度"] + "）"
+                : "位置は" + basis + "です。現地は未確認です。";
             popup.append(warn);
           }
 
