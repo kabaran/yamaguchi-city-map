@@ -1,0 +1,26 @@
+{
+ "municipality": "阿武町",
+ "source": "阿武町公式サイト「官公署・事業所等一覧」",
+ "source_url": "https://www.town.abu.lg.jp/guide/kankoushozigyoushotouitiran/",
+ "updated": "記載なし",
+ "items": [
+  {
+   "name": "阿武町中央公民館",
+   "address": "山口県阿武郡阿武町奈古",
+   "phone": "08388-2-2044",
+   "note": "公式ページの所在地は字名のみ（番地なし）"
+  },
+  {
+   "name": "阿武町福賀公民館",
+   "address": "山口県阿武郡阿武町福賀",
+   "phone": "08388-5-0211",
+   "note": "公式ページの所在地は字名のみ（番地なし）"
+  },
+  {
+   "name": "阿武町宇田郷公民館",
+   "address": "山口県阿武郡阿武町宇田郷",
+   "phone": "08388-4-0211",
+   "note": "公式ページの所在地は字名のみ（番地なし）"
+  }
+ ]
+}
