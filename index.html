@@ -60,6 +60,7 @@
     .popup-h { margin-top: 6px; font-size: 12px; color: #555; border-bottom: 1px solid #ddd; }
     .popup-warn { margin-top: 6px; padding: 6px 8px; background: #fff3a8; border: 2px solid #e0b800; font-size: 13px; line-height: 1.5; max-width: 260px; }
     #pref-status { margin-top: 8px; font-size: 14px; max-width: 720px; }
+    #pref-status details { margin-top: 4px; }
     #pref-status summary { cursor: pointer; font-weight: bold; }
     #pref-status li { margin: 2px 0; }
     #pref-status .st-skip, #pref-status .st-unchecked { color: #8a5a00; }
@@ -79,11 +80,7 @@
       >
       <div id="search-results" role="listbox"></div>
     </div>
-    <details id="pref-status">
-      <summary>地域交流センター：山口県の市町ごとの対応状況</summary>
-      <p id="pref-status-note"></p>
-      <ul id="pref-status-list"></ul>
-    </details>
+    <div id="pref-status"></div>
   </header>
   <div id="map" aria-label="地域コミュニティ施設の地図"></div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -106,18 +103,29 @@
         if (!prefResponse.ok) throw new Error("データを取得できません");
         const prefData = await prefResponse.json();
 
-        fetch("./status_centers.json").then((r) => r.json()).then(function (st) {
-          const label = { ok: "表示", skip: "未対応", none: "該当なし", unchecked: "未対応" };
-          document.getElementById("pref-status-note").textContent =
-            st.note + "（調査日 " + st.checked + "）";
-          const ul = document.getElementById("pref-status-list");
-          st.municipalities.forEach(function (m) {
-            const li = document.createElement("li");
-            li.className = "st-" + m.status;
-            li.textContent = m.name + "【" + label[m.status] + "】" + m.text;
-            ul.appendChild(li);
-          });
-        }).catch(function () {});
+        const kominkanResponse = await fetch("./kominkan_pref.geojson");
+        if (!kominkanResponse.ok) throw new Error("データを取得できません");
+        const kominkanPrefData = await kominkanResponse.json();
+
+        ["./status_centers.json", "./status_kominkan.json"].forEach(function (u) {
+          fetch(u).then((r) => r.json()).then(function (st) {
+            const label = { ok: "表示", skip: "未対応", none: "該当なし", unchecked: "未対応" };
+            const det = document.createElement("details");
+            const sum = document.createElement("summary");
+            sum.textContent = st.layer + "：山口県の市町ごとの対応状況";
+            const note = document.createElement("p");
+            note.textContent = st.note + "（調査日 " + st.checked + "）";
+            const ul = document.createElement("ul");
+            st.municipalities.forEach(function (m) {
+              const li = document.createElement("li");
+              li.className = "st-" + m.status;
+              li.textContent = m.name + "【" + label[m.status] + "】" + m.text;
+              ul.appendChild(li);
+            });
+            det.append(sum, note, ul);
+            document.getElementById("pref-status").appendChild(det);
+          }).catch(function () {});
+        });
 
         function buildPopup(feature) {
           const properties = feature.properties || {};
@@ -138,7 +146,7 @@
             popup.append(topic);
           }
 
-          if (properties["データ区分"] === "地域交流センター（山口市以外）") {
+          if (/（山口市以外）$/.test(properties["データ区分"] || "")) {
             const add = function (head, text) {
               if (!text) return;
               const h = document.createElement("div");
@@ -227,6 +235,18 @@
         }
         function muniFilter(f) { return !curMuni || muniOf(f) === curMuni; }
 
+        const prefKominkanLayer = L.geoJSON(kominkanPrefData, {
+          filter: muniFilter,
+          pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, {
+              radius: 8, color: "#2e7d32", fillColor: "#8fd694", fillOpacity: 0.9, weight: 2
+            });
+          },
+          onEachFeature: function (feature, layer) {
+            layer.bindPopup(buildPopup(feature));
+          }
+        }).addTo(map);
+
         const prefCenterLayer = L.geoJSON(prefData, {
           filter: muniFilter,
           pointToLayer: function (feature, latlng) {
@@ -297,13 +317,14 @@
         L.control.layers(null, {
           "地域交流センター等（山口市）": mainLayer,
           "地域交流センター（山口市以外・位置は推定）": prefCenterLayer,
-          "公民館": kominkanLayer,
+          "公民館（山口市）": kominkanLayer,
+          "公民館（山口市以外・位置は推定）": prefKominkanLayer,
           "見つかった公会堂（網羅性なし）": koukaidouLayer,
           "認知症カフェ": ninchishouCafeLayer
         }, { collapsed: false }).addTo(map);
 
         const layerDefs = [
-          [prefCenterLayer, prefData], [mainLayer, mainData], [kominkanLayer, kominkanData],
+          [prefCenterLayer, prefData], [prefKominkanLayer, kominkanPrefData], [mainLayer, mainData], [kominkanLayer, kominkanData],
           [koukaidouLayer, koukaidouData], [ninchishouCafeLayer, ninchishouCafeData]
         ];
         const searchIndex = [];
