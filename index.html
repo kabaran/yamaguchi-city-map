@@ -89,7 +89,9 @@
 
     async function showMap() {
       try {
-        const map = L.map("map", { zoomControl: false }).setView([34.18, 131.47], 11);
+        const map = L.map("map", { zoomControl: false });
+        // 初期表示は山口県全体（南西端〜北東端）
+        map.fitBounds([[33.70, 130.75], [34.80, 132.50]]);
 
         L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
           maxZoom: 19,
